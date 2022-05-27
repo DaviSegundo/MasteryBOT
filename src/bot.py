@@ -57,11 +57,11 @@ async def roll(ctx, lol_name: str):
     df = pd.DataFrame(infos)
     df = df.rename(columns={"name": "Champion", "mastery": "Mastery", "points": "Points"})
 
-    dfi.export(df, f'../imgs/{lol_name}.png')
-    with open(f'../imgs/{lol_name}.png', 'rb') as f:
+    dfi.export(df, f'{lol_name}.png')
+    with open(f'{lol_name}.png', 'rb') as f:
         picture = discord.File(f)
         await ctx.send(file=picture)
-    os.remove(f'../imgs/{lol_name}.png')
+    os.remove(f'{lol_name}.png')
 
 
 
