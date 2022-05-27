@@ -1,11 +1,10 @@
 import os
 import random
-import pandas as pd
-import dataframe_image as dfi
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from lol import LoLAPI
+from tabulate import tabulate
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -24,16 +23,16 @@ async def roll(ctx):
 Bot Commands:
 
 **hello**: Sends a kind message to the informed person.
-    **Param**:   $hello <name>
-    **Example**: $hello Duduzinho
+    **Param**:   &hello <name>
+    **Example**: &hello Duduzinho
 
 **roll_dice**: Simulates rolling dice.
-    **Param**:   $roll_dice <number_of_dices> <number_of_sides>
-    **Example**: $roll_dice 2 20
+    **Param**:   &roll_dice <number_of_dices> <number_of_sides>
+    **Example**: &roll_dice 2 20
 
 **mastery**: Inform the champions that you can still get a chest. 
-    **Param**:   $mastery <lol_name>  |  __OBS: Dont use spaces in the name.__
-    **Example**: $mastery BrainLag
+    **Param**:   &mastery <lol_name>  |  __OBS: Dont use spaces in the name.__
+    **Example**: &mastery BrainLag
 """
     await ctx.send(resp)
 
@@ -52,17 +51,14 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
 
 @bot.command(name='mastery')
 async def roll(ctx, lol_name: str):
-    infos = lol.get_id(lol_name).get_mastery()[:10]
-    infos = sorted(infos, key=lambda x: x["points"], reverse=True)
-    df = pd.DataFrame(infos)
-    df = df.rename(columns={"name": "Champion", "mastery": "Mastery", "points": "Points"})
-
-    dfi.export(df, f'{lol_name}.png')
-    with open(f'{lol_name}.png', 'rb') as f:
-        picture = discord.File(f)
-        await ctx.send(file=picture)
-    os.remove(f'{lol_name}.png')
-
+    player = lol.get_id(lol_name)
+    infos = player.get_mastery()[:10]
+    infos = sorted(infos, key=lambda x: x[2], reverse=True)
+    infos.insert(0, ['Champion', 'Mastery', 'Points'])
+    response = f'**Name**: {player.name}\n**Level**: {player.level}\n\n **Next champions to get chest:**\n'
+    response += tabulate(infos, headers="firstrow", tablefmt="pretty", numalign="right")
+    print(response)
+    await ctx.send(response)
 
 
 bot.run(TOKEN)

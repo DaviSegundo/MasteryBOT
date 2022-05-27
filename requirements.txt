@@ -1,5 +1,4 @@
 discord.py
 riotwatcher
 python-dotenv
-pandas
-dataframe-image
+tabulate
