@@ -25,10 +25,14 @@ class LoLAPI:
         champions_no_chest = [c for c in self.mastery_info if c.get('chestGranted') == False]
         champions_no_chest_data = []
         for i in champions_no_chest:
-            info = {}
-            info['name'] = self.dict_champions.get(str(i.get('championId')))
-            info['mastery'] = i.get('championLevel')
-            info['points'] = i.get('championPoints')
+            # info = {}
+            # info['name'] = self.dict_champions.get(str(i.get('championId')))
+            # info['mastery'] = i.get('championLevel')
+            # info['points'] = i.get('championPoints')
+            info = []
+            info.append(self.dict_champions.get(str(i.get('championId'))))
+            info.append(i.get('championLevel'))
+            info.append(i.get('championPoints'))
             champions_no_chest_data.append(info)
         return champions_no_chest_data
 
