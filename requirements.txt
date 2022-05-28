@@ -2,3 +2,5 @@ discord.py
 riotwatcher
 python-dotenv
 tabulate
+beautifulsoup4
+requests
