@@ -1,5 +1,5 @@
 from riotwatcher import LolWatcher
-
+from requests.exceptions import HTTPError
 
 class LoLAPI:
 
@@ -9,7 +9,10 @@ class LoLAPI:
         self.get_champions_list()
 
     def get_informations_by_name(self, name: str, region: str = 'br1'):
-        self.person = self.lol_watcher.summoner.by_name(region, name)
+        try:
+            self.person = self.lol_watcher.summoner.by_name(region, name)
+        except HTTPError:
+            return None
         self.id = self.person.get('id')
         self.puuid = self.person.get('puuid')
         self.name = self.person.get('name')

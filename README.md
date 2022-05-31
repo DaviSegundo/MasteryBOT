@@ -3,7 +3,8 @@
 ## Author: Davi Segundo Pinheiro
 
 ### Functionalities
-- Returns suggestions of upcoming champions to get chests
+- Returns suggestions of upcoming champions to get chests.
+- Returns information about stats of a player.
 
 ### Observations:
 Still in the development phase, when the features are more complete, it will be available for use.
