@@ -24,21 +24,25 @@ async def on_ready():
 
 @bot.command(name='info', help="Explain how to use all commands.")
 async def roll(ctx):
-    resp = """
+    resp = """```
 Bot Commands:
 
-**hello**: Sends a kind message to the informed person.
-    **Param**:   &hello <name>
-    **Example**: &hello Duduzinho
+hello: Sends a kind message to the informed person.
+    Param:   &hello <name>
+    Example: &hello Duduzinho
 
-**roll_dice**: Simulates rolling dice.
-    **Param**:   &roll_dice <number_of_dices> <number_of_sides>
-    **Example**: &roll_dice 2 20
+roll_dice: Simulates rolling dice.
+    Param:   &roll_dice <number_of_dices> <number_of_sides>
+    Example: &roll_dice 2 20
 
-**mastery**: Inform the champions that you can still get a chest. 
-    **Param**:   &chest <lol_name>
-    **Example**: &chest BrainLag
-"""
+chest: Inform the champions that you can still get a chest. 
+    Param:   &chest <lol_name>
+    Example: &chest BrainLag
+
+clash: Return information about stats of a given player. 
+    Param:   &clash <lol_name>
+    Example: &clash BrainLag
+```"""
     await ctx.send(resp)
 
 
@@ -61,30 +65,34 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
 async def chest(ctx, *args):
     lol_name = ''.join(args)
     player = lol.get_informations_by_name(lol_name)
-    infos = player.get_no_chest()[:10]
-    infos = sorted(infos, key=lambda x: x[2], reverse=True)
-    output = formatter.format_champions_no_chest(infos, player)
+    if player is not None:
+        infos = player.get_no_chest()[:10]
+        infos = sorted(infos, key=lambda x: x[2], reverse=True)
+        output = formatter.format_champions_no_chest(infos, player)
 
-    await ctx.send(f'```{output}```')
-
+        await ctx.send(f'```{output}```')
+    else:
+        await ctx.send(f'Name "{lol_name}" not found!')
 
 @bot.command(name='clash')
-async def chest(ctx, *args):
+async def clash(ctx, *args):
     lol_name = ''.join(args)
-    ws = ClashWebScrap(lol_name).run()
-
     player = lol.get_informations_by_name(lol_name)
-    mastery_info = player.get_top_mastery()[:5]
-    player_info = player.name, player.level
-    ranked_info = ws.ranked
-    champion_info = ws.champions_infos
-    output1 = formatter.ranked_info(ranked_info)
-    output2 = formatter.champion_info(champion_info)
-    output3 = formatter.format_top_mastery(mastery_info)
+    if player is not None:
+        ws = ClashWebScrap(lol_name).run()
 
-    out = formatter.format_clash_info(player_info, output1, output2, output3)
+        mastery_info = player.get_top_mastery()[:5]
+        player_info = player.name, player.level
+        ranked_info = ws.ranked
+        champion_info = ws.champions_infos
+        output1 = formatter.ranked_info(ranked_info)
+        output2 = formatter.champion_info(champion_info)
+        output3 = formatter.format_top_mastery(mastery_info)
 
-    await ctx.send(out)
+        out = formatter.format_clash_info(player_info, output1, output2, output3)
+        await ctx.send(out)
+    else:
+        await ctx.send(f'Name "{lol_name}" not found!')
 
 if __name__ == '__main__':
     bot.run(TOKEN)
