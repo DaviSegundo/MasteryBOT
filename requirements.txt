@@ -4,3 +4,4 @@ python-dotenv
 tabulate
 beautifulsoup4
 requests
+python-dateutil
