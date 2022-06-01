@@ -3,9 +3,9 @@ import random
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from lol_api import LoLAPI
-from data_formatter import Formatter
-from clash_ws import ClashWebScrap
+from utils.lol_api import LoLAPI
+from utils.data_formatter import Formatter
+from utils.clash_ws import ClashWebScrap
 
 
 load_dotenv()
@@ -63,7 +63,7 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
 
 @bot.command(name='chest')
 async def chest(ctx, *args):
-    lol_name = ''.join(args)
+    lol_name, out_name = ''.join(args), ' '.join(args)
     player = lol.get_informations_by_name(lol_name)
     if player is not None:
         infos = player.get_no_chest()[:10]
@@ -74,9 +74,10 @@ async def chest(ctx, *args):
     else:
         await ctx.send(f'Name "{lol_name}" not found!')
 
+
 @bot.command(name='clash')
 async def clash(ctx, *args):
-    lol_name = ''.join(args)
+    lol_name, out_name = ''.join(args), ' '.join(args)
     player = lol.get_informations_by_name(lol_name)
     if player is not None:
         ws = ClashWebScrap(lol_name).run()
@@ -89,10 +90,24 @@ async def clash(ctx, *args):
         output2 = formatter.champion_info(champion_info)
         output3 = formatter.format_top_mastery(mastery_info)
 
-        out = formatter.format_clash_info(player_info, output1, output2, output3)
+        out = formatter.format_clash_info(
+            player_info, output1, output2, output3)
         await ctx.send(out)
     else:
-        await ctx.send(f'Name "{lol_name}" not found!')
+        await ctx.send(f'Name "{out_name}" not found!')
+
+
+@bot.command(name='name')
+async def clash(ctx, *args):
+    lol_name, out_name = ''.join(args), ' '.join(args)
+    player = lol.get_informations_by_name(lol_name)
+    if player is not None:
+        last_game, date_cleanup, days_cleanup, months = player.get_info_cleanup_date()
+        out = formatter.format_name_available(
+            player.name, player.level, last_game, date_cleanup, days_cleanup, months)
+        await ctx.send(out)
+    else:
+        await ctx.send(f'**{out_name}** is **availabe**!')
 
 if __name__ == '__main__':
     bot.run(TOKEN)
