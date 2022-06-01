@@ -29,7 +29,7 @@ class DateFormatter:
         date_cleanup = date + relativedelta(months=months)
         date_cleanup_formated = date_cleanup.strftime("%d %b %Y")
 
-        days_cleanup = (date_cleanup - date).days
+        days_cleanup = (date_cleanup - datetime.today()).days
         
         return date_cleanup_formated, days_cleanup, months
         
