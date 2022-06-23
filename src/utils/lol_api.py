@@ -93,10 +93,4 @@ if __name__ == '__main__':
     player = lol.get_informations_by_name("TheAcclaimed")
     
     print(player.get_info_cleanup_date())
-    # from datetime import datetime
-    # da = 1654040557
-    # d = datetime.fromtimestamp(da)
-    # d = d.strftime("%d %b %Y - %H:%M:%S")
-    # print(d)
-
     
