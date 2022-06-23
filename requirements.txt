@@ -5,3 +5,4 @@ tabulate
 beautifulsoup4
 requests
 python-dateutil
+boto3
